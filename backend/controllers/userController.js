@@ -21,7 +21,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (userExists) {
         res.status(400);
-        throw new Error("User alreade exists");
+        throw new Error("User already exists");
     }
 
     //Hash password
@@ -44,7 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
         });
     } else {
         res.status(400);
-        throw new error("Inbvalid user data");
+        throw new error("Invalid user data");
     }
 });
 

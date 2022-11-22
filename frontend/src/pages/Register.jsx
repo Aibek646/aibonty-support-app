@@ -4,6 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { register, reset } from "../features/auth/authSlice";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -15,10 +16,40 @@ const Register = () => {
 
     const { name, email, password, password2 } = formData;
 
+    const { user, isLoading, isSuccess, message, isError } = useSelector(
+        (state) => state.auth
+    );
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleSubmit = () => {};
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+
+        //Redirect when logged in
+        if (isSuccess || user) {
+            navigate("/");
+        }
+        dispatch(reset());
+    }, [isError, isSuccess, user, message, navigate, dispatch]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (password !== password2) {
+            toast.error("passwords do not match");
+        } else {
+            const userData = {
+                name: name,
+                email: email,
+                password: password
+            };
+
+            dispatch(register(userData));
+        }
+    };
 
     const onChange = (e) => {
         setFormData((prevState) => ({
@@ -26,6 +57,10 @@ const Register = () => {
             [e.target.name]: e.target.value
         }));
     };
+
+    if (isLoading) {
+        return <Spinner />;
+    }
 
     return (
         <>
