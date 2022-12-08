@@ -49,7 +49,7 @@ const createTicket = asyncHandler(async (req, res) => {
 });
 
 //@des Get user ticket
-//@route POST /api/tickets/:id
+//@route GET /api/tickets/:id
 //@access Private
 
 const getTicket = asyncHandler(async (req, res) => {
