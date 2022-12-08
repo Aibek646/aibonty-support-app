@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import BackButton from "../components/BackButton";
+import BackButton from "../components/BackButton";
+
 import Spinner from "../components/Spinner";
-// import TicketItem from "../components/TicketItem";
+import TicketItem from "../components/TicketItem";
+
 import { getTickets, reset } from "../features/tickets/ticketSlice";
 
 const Tickets = () => {
@@ -12,17 +14,38 @@ const Tickets = () => {
 
     const dispatch = useDispatch();
 
-    useEffect(() => {});
+    // useEffect(() => {
+    //     return () => {
+    //         if (isSuccess) {
+    //             dispatch(reset());
+    //         }
+    //     };
+    // }, [dispatch, isSuccess]);
 
-    useEffect(() => {});
+    useEffect(() => {
+        return () => {
+            dispatch(getTickets());
+        };
+    }, [dispatch]);
 
-    if (isLoading) {
+    if (!tickets) {
         return <Spinner />;
     }
 
     return (
         <>
+            <BackButton url="/" />
             <h1>Tickets</h1>
+            <div className="tickets">
+                <div className="ticket-headings">
+                    <div>Date</div>
+                    <div>Product</div>
+                    <div>Status</div>
+                </div>
+                {tickets.map((ticket) => (
+                    <TicketItem key={ticket._id} ticket={ticket} />
+                ))}
+            </div>
         </>
     );
 };
