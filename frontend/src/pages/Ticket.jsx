@@ -8,6 +8,8 @@ import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import { FaPlus } from "react-icons/fa";
 import { getTicket } from "../features/tickets/ticketSlice";
+import { createNote, getNotes } from "../features/note/noteSlice";
+import NoteItem from "../components/NoteItem";
 
 const customStyles = {
     content: {
@@ -29,6 +31,8 @@ const Ticket = () => {
     const [noteText, setNoteText] = useState("");
     const { ticket } = useSelector((state) => state.tickets);
 
+    const { notes } = useSelector((state) => state.notes);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -36,6 +40,7 @@ const Ticket = () => {
 
     useEffect(() => {
         dispatch(getTicket(ticketId)).unwrap().catch(toast.error);
+        dispatch(getNotes(ticketId)).unwrap().catch(toast.error);
     }, [ticketId, dispatch]);
 
     const openModal = () => setModalIsOpen(true);
@@ -43,6 +48,13 @@ const Ticket = () => {
 
     const onNoteSubmit = (e) => {
         e.preventDefault();
+        dispatch(createNote({ noteText, ticketId }))
+            .unwrap()
+            .then(() => {
+                setNoteText("");
+                closeModal();
+            })
+            .catch(toast.error);
     };
 
     if (!ticket) {
@@ -52,7 +64,7 @@ const Ticket = () => {
     return (
         <div className="ticket-page">
             <header className="ticket-header">
-                <BackButton />
+                <BackButton url="/tickets" />
                 <h2>
                     Ticket ID: {ticket._id}
                     <span className={`status status-${ticket.status}`}>
@@ -107,6 +119,11 @@ const Ticket = () => {
                     </div>
                 </form>
             </Modal>
+            {notes ? (
+                notes.map((note) => <NoteItem key={note._id} note={note} />)
+            ) : (
+                <Spinner />
+            )}
         </div>
     );
 };
