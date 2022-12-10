@@ -41,7 +41,9 @@ const Ticket = () => {
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
 
-    const onNoteSubmit = () => {};
+    const onNoteSubmit = (e) => {
+        e.preventDefault();
+    };
 
     if (!ticket) {
         return <Spinner />;
